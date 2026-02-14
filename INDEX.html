@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #ffc0cb; /* Pink Background */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: filter 0.8s ease, background-color 0.8s ease;
+        }
+
+        /* Floating Hearts Background Animation */
+        .heart-bg {
+            position: absolute;
+            color: #ff69b4;
+            font-size: 20px;
+            top: -10vh;
+            animation: floatDown 5s linear infinite;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        @keyframes floatDown {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
+        }
+
+        /* Main Card */
+        .container {
+            position: relative;
+            z-index: 10;
+            background-color: #C71585; /* Dark Pink Foreground */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+            color: white;
+            max-width: 400px;
+            width: 90%;
+            transition: transform 0.3s ease;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Buttons */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn-yes {
+            background-color: #ff0000; /* Red */
+            color: white;
+        }
+
+        .btn-no {
+            background-color: white; /* White */
+            color: #C71585;
+        }
+
+        /* Sad Mode (Black and White) */
+        .sad-mode {
+            filter: grayscale(100%);
+            background-color: #333 !important;
+        }
+
+        /* Success State */
+        .hidden {
+            display: none;
+        }
+
+        #cat-image {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+
+        /* Exploding Hearts */
+        .explosion-heart {
+            position: absolute;
+            font-size: 30px;
+            color: red;
+            animation: explode 1s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(2); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="hearts-container"></div>
+
+    <div class="container" id="main-card">
+        <h1 id="question">Will you be my Valentine?</h1>
+        
+        <div class="btn-container" id="buttons">
+            <button class="btn-yes" onclick="handleYes()">YES</button>
+            <button class="btn-no" onclick="handleNo()">NO</button>
+        </div>
+
+        <div id="success-content" class="hidden">
+            <h2>Yay! ❤️</h2>
+            <img id="cat-image" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbW80aG96cWx5a3V6Mm14Y3V6Mm14Y3V6Mm14Y3V6Mm14eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MDJ9IbxxvDUQM/giphy.gif" alt="Happy Cats">
+        </div>
+    </div>
+
+    <script>
+        // 1. Create Floating Background Hearts
+        function createBackgroundHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartCount = 30; // Number of background hearts
+
+            for (let i = 0; i < heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('heart-bg');
+                
+                // Random positioning
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 3 + 's'; // Between 3s and 6s
+                heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+                
+                container.appendChild(heart);
+            }
+        }
+
+        // 2. Handle "No" Click
+        function handleNo() {
+            document.body.classList.add('sad-mode');
+            alert("😢 Are you sure?");
+        }
+
+        // 3. Handle "Yes" Click
+        function handleYes() {
+            // Remove sad mode if it was active
+            document.body.classList.remove('sad-mode');
+            
+            // Trigger explosion
+            createExplosion();
+
+            // Switch content
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('buttons').style.display = 'none';
+            document.getElementById('success-content').classList.remove('hidden');
+        }
+
+        // 4. Heart Explosion Effect
+        function createExplosion() {
+            const colors = ['#ff0000', '#ff69b4', '#ff1493', '#C71585'];
+            
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.classList.add('explosion-heart');
+                
+                // Position at center of screen
+                heart.style.left = '50%';
+                heart.style.top = '50%';
+                
+                // Randomize direction (x, y)
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 200 + Math.random() * 300; // Distance to fly
+                const x = Math.cos(angle) * velocity + 'px';
+                const y = Math.sin(angle) * velocity + 'px';
+                
+                heart.style.setProperty('--x', x);
+                heart.style.setProperty('--y', y);
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(heart);
+
+                // Clean up element after animation
+                setTimeout(() => {
+                    heart.remove();
+                }, 1000);
+            }
+        }
+
+        // Initialize background on load
+        createBackgroundHearts();
+    </script>
+</body>
+</html>
